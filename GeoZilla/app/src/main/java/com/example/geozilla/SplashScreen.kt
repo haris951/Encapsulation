@@ -2,11 +2,9 @@ package com.example.geozilla
 
 import android.content.Intent
 import android.os.Bundle
-import android.os.Handler
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import com.example.geozilla.activities.Geozillawelcome
-import com.example.geozilla.fragments.PeopleFragment
 import com.google.firebase.auth.FirebaseAuth
 
 class SplashScreen : AppCompatActivity() {

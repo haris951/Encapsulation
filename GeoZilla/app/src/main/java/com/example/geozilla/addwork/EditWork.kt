@@ -27,7 +27,6 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var saveBtn: Button
     private lateinit var text:EditText
     private var selectedLatLng: LatLng? = null
-
     private val db = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,7 +61,6 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
                         addressTextView.text = result.details
                         addressTextView.visibility = TextView.VISIBLE
 
-                        // Move the map camera to the address location
                         mMap.clear()
                         mMap.addMarker(MarkerOptions().position(result.location).title(result.name))
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.location, 15f))
@@ -164,7 +162,8 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
                     }
                 }
                 .addOnFailureListener { exception ->
-                    Toast.makeText(this, "Failed to retrieve address: $exception", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Failed to retrieve address: $exception",
+                        Toast.LENGTH_SHORT).show()
                 }
         }
     }

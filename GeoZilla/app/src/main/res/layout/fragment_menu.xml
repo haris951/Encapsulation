@@ -181,16 +181,13 @@ android:drawableLeft="@drawable/baseline_group_add_24"
     <TextView
         android:id="@+id/settingmenu"
         android:layout_width="match_parent"
-        android:paddingStart="10sp"
-        android:paddingEnd="10sp"
-        android:layout_height="40sp"
+        android:layout_height="55sp"
         android:text="@string/sign_in_with_different_account"
         android:textSize="18sp"
         android:textColor="@color/red"
         android:gravity="center_horizontal"
+        android:clickable="true"
         android:paddingTop="12sp"
-        android:drawablePadding="10sp"
         android:layout_marginTop="18sp"
-        android:onClick="setting"
         app:layout_constraintTop_toBottomOf="@+id/textView11_menu"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
