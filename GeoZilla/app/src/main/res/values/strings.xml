@@ -110,6 +110,7 @@
     <string name="join_circle">Join Circle</string>
     <string name="user_address">user address</string>
     <string name="name">name</string>
+    <string name="delete_all">Delete All</string>
 
 
 </resources>

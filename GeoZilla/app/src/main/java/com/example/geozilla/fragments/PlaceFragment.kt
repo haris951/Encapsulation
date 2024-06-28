@@ -19,23 +19,18 @@ class PlaceFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
     ): View? {
-        // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_place, container, false)
-        // initializing our button with its id.
         val btnShowBottomSheet = view.findViewById<Button>(R.id.addplace)
         btnShowBottomSheet.setOnClickListener {
-            //creating a new bottom sheet dialog.
             val dialog = BottomSheetDialog(requireContext())
             //inflating a layout file which we have created.
             val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
-            dialog.setCancelable(true)  //set cancelable
-            dialog.setContentView(bottomSheetView) //setting content view to our view.
-            dialog.show() //calling a show method to display a dialog.
+            dialog.setCancelable(true)
+            dialog.setContentView(bottomSheetView)
+            dialog.show()
         }
         return view
     }
-
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         // Find the TextView by its ID
@@ -44,16 +39,15 @@ class PlaceFragment : Fragment() {
         val addschoolTextView:TextView=view.findViewById(R.id.textView4)
         val addgymTextView:TextView=view.findViewById(R.id.textView5)
         val addcafeTextView:TextView=view.findViewById(R.id.textView6_addcafe)
-        // Set a click listener for the TextView
+
         edittextTextView.setOnClickListener {
             openMain7(it) // Pass the clicked view as parameter
-
         }
-addhomeTextView.setOnClickListener{
-    addHome(it)
-}
+        addhomeTextView.setOnClickListener{
+             addHome(it)
+        }
         addschoolTextView.setOnClickListener{
-            addSchool(it)
+             addSchool(it)
         }
         addgymTextView.setOnClickListener{
             addGym(it)
@@ -84,7 +78,7 @@ addhomeTextView.setOnClickListener{
         requireContext().startActivity(intent)
     }
 
-    fun addCafe(view: View) {
+   private fun addCafe(view: View) {
         val intent=Intent (requireContext(),AddCafe::class.java)
         requireContext().startActivity(intent)
     }

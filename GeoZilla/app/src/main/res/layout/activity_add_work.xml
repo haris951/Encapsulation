@@ -98,67 +98,21 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/notifications_work" />
 
-    <TextView
-        android:id="@+id/texthome"
-        android:layout_width="match_parent"
-        android:layout_height="45sp"
-        android:text="@string/be_sure_your_family_members_get"
-        android:layout_marginTop="20sp"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/id_map" />
-
-    <TextView
-        android:id="@+id/texthome1"
-        android:layout_width="match_parent"
-        android:layout_height="45sp"
-        android:gravity="center_horizontal"
-        android:text="@string/home"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.487"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texthome" />
-
-    <TextView
-        android:id="@+id/texthome2"
-        android:layout_width="match_parent"
-        android:layout_height="45sp"
-        android:text="@string/please_invite_members_to_set"
-        android:textSize="18sp"
-        android:gravity="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texthome1" />
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="45sp"
-        android:text="@string/notification"
-        android:textSize="18sp"
-        android:gravity="center_horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/button5"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/texthome2"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Button
-        android:id="@+id/button5"
-        android:layout_width="300sp"
+    <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card2"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="76dp"
-        android:backgroundTint="@color/green"
-        android:text="@string/add_a_new_member"
-        android:textSize="15sp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginTop="10dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.603"
         app:layout_constraintStart_toStartOf="parent"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintTop_toBottomOf="@+id/id_map">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerview_addwork"
+            android:layout_width="391dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="7dp"
+            tools:listitem="@layout/user_item_layout" />
+    </com.google.android.material.card.MaterialCardView>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

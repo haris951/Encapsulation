@@ -15,7 +15,7 @@
         android:layout_marginTop="16dp"
         android:gravity="center_horizontal"
         android:paddingTop="30sp"
-        android:text="Places"
+        android:text="@string/places"
         android:textSize="25sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -33,7 +33,6 @@
         android:paddingVertical="30sp"
         android:paddingStart="10sp"
         android:paddingEnd="5sp"
-
         android:paddingTop="12sp"
         android:textSize="15sp"
         android:onClick="openMain7"

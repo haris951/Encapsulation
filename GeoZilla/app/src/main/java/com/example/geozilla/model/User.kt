@@ -5,10 +5,9 @@ data class User(
     val name: String = "",
     val email: String = "",
     val photoUrl: String = "",
-    val sharedLink: String? = "",
-    val address:String=""
-
-) {
-    val userId: String=""
-}
+    var address: String = "",
+    val linkedUsers: List<String> = listOf(),
+    var latitude:Double=0.0,
+    var longitude:Double=0.0
+)
 
