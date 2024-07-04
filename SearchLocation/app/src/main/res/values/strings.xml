@@ -1,4 +1,0 @@
-<resources>
-    <string name="app_name">Search Location</string>
-    <string name="google_map_api_key">android:name="com.google.android.geo.API_KEY"</string>
-</resources>
