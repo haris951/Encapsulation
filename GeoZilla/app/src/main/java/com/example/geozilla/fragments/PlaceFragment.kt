@@ -23,8 +23,7 @@ class PlaceFragment : Fragment() {
         val btnShowBottomSheet = view.findViewById<Button>(R.id.addplace)
         btnShowBottomSheet.setOnClickListener {
             val dialog = BottomSheetDialog(requireContext())
-            //inflating a layout file which we have created.
-            val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog, null)
+            val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_dialog,null)
             dialog.setCancelable(true)
             dialog.setContentView(bottomSheetView)
             dialog.show()

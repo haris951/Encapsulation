@@ -52,6 +52,7 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.firebase.database.ktx)
     implementation(libs.androidx.media3.common)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -65,13 +66,15 @@ dependencies {
     implementation("com.google.android.material:material:1.12.0")
     implementation("com.google.android.libraries.places:places:3.4.0")
     implementation ("de.hdodenhof:circleimageview:2.1.0")
-    implementation ("com.facebook.android:facebook-login:latest.release")
     implementation ("com.google.firebase:firebase-dynamic-links")
     implementation ("com.google.firebase:firebase-analytics")
     implementation ("com.github.bumptech.glide:glide:4.12.0")
     implementation ("com.google.android.material:material:1.4.0")
     implementation ("androidx.recyclerview:recyclerview:1.2.1")
     implementation ("com.google.code.gson:gson:2.8.8")
+    implementation ("com.google.firebase:firebase-messaging:23.1.1")
+   implementation ("com.google.android.gms:play-services-location:21.3.0")
+
 
 
 

@@ -3,6 +3,7 @@ package com.example.geozilla.fragments
 import android.Manifest
 import android.annotation.SuppressLint
 import android.content.Context
+import android.os.Handler
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Geocoder
@@ -30,7 +31,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.firebase.auth.FirebaseAuth
@@ -103,6 +103,7 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
                 profileName.text = it
             }
         }
+
         return view
     }
 
@@ -170,7 +171,6 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
                 val userPhotoUrl = user?.photoUrl.toString()
                 val latitude = location?.latitude ?: 0.0
                 val longitude = location?.longitude ?: 0.0
-                val address = "Your address string here"
 
                 val userMap = hashMapOf(
                     "uid" to userId,
@@ -179,7 +179,6 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
                     "photoUrl" to userPhotoUrl,
                     "latitude" to latitude,
                     "longitude" to longitude,
-                    "address" to address,
                     "linkedUsers" to emptyList<String>() // Initialize linkedUsers as an empty list
                 )
 
@@ -262,35 +261,35 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
                 }
             }
     }
+    @SuppressLint("MissingPermission")
     private fun fetchUsers(userIds: List<String>, currentUserId: String) {
         val db = FirebaseFirestore.getInstance()
         val usersCollection = db.collection("users")
-        userList.clear()
-        for (userId in userIds) {
-            if (userId != currentUserId) { // Skip the current user's own data
-                usersCollection.document(userId).get()
-                    .addOnSuccessListener { documentSnapshot ->
-                        if (documentSnapshot.exists()) {
-                            val user = documentSnapshot.toObject(User::class.java)
-                            user?.let {
-                                val userLocation = LatLng(it.latitude, it.longitude)
-                                googleMap.addMarker(MarkerOptions().position(userLocation).title(it.name))
-
-                                getAddressFromLocation(it.latitude, it.longitude, it.name) { address ->
-                                    it.address = address
-                                    userList.add(it)
-                                    updateRecyclerView(userList)
-                                }
-                            }
-                        }
-                    }
+           userList.clear()
+            for (userId in userIds) {
+              if (userId != currentUserId) { // Skip the current user's own data
+               usersCollection.document(userId).get()
+                .addOnSuccessListener { documentSnapshot ->
+                if (documentSnapshot.exists()) {
+                val user = documentSnapshot.toObject(User::class.java)
+                user?.let {
+                val newUserLocation = LatLng(it.latitude, it.longitude)
+                 googleMap.clear()
+                 googleMap.addMarker(MarkerOptions().position(newUserLocation).title(user.name))
+                 googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(newUserLocation, 15f))
+                 getAddressFromLocation(it.latitude, it.longitude) { address ->
+                 it.address = address
+                 userList.add(it)
+                 updateRecyclerView(userList)
+               }
+              }
+             }
+             }
             }
-        }
+           }
     }
-    private fun getAddressFromLocation(latitude: Double, longitude: Double, userName: String, callback: (String) -> Unit) {
+    private fun getAddressFromLocation(latitude: Double, longitude: Double, callback: (String) -> Unit) {
         val geocoder = Geocoder(requireContext(), Locale.getDefault())
-        val userLocation = LatLng(latitude, longitude)
-        googleMap.addMarker(MarkerOptions().position(userLocation).title(userName))
         if (Geocoder.isPresent()) {
             val addresses = geocoder.getFromLocation(latitude, longitude, 1)
             if (!addresses.isNullOrEmpty()) {
@@ -303,7 +302,6 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
             callback("Geocoding not available")
         }
     }
-
     private fun saveUserDataToSharedPreferences(userList: List<User>) {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val editor = sharedPreferences.edit()
@@ -312,7 +310,6 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
         editor.putString("user_list", json)
         editor.apply()
     }
-
     private fun loadUserDataFromSharedPreferences(): List<User> {
         val sharedPreferences = requireContext().getSharedPreferences("user_data", Context.MODE_PRIVATE)
         val gson = Gson()
@@ -330,21 +327,18 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
         val wah = LatLng(33.780775611641324, 72.723408419941)
         googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(wah, 15f))
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        if (ActivityCompat.checkSelfPermission(requireContext(),
-                Manifest.permission.ACCESS_FINE_LOCATION
+        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION
             ) == PackageManager.PERMISSION_GRANTED
         ) {
             showLiveLocation()
 
         } else {
             ActivityCompat.requestPermissions(
-                requireActivity(),
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                requireActivity(), arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 LOCATION_PERMISSION_REQUEST_CODE
             )
         }
     }
-
     @SuppressLint("MissingPermission")
     private fun showLiveLocation() {
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 100)
@@ -372,9 +366,11 @@ class PeopleFragment : Fragment(), OnMapReadyCallback {
         }
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
+
     override fun onPause() {
         super.onPause()
         fusedLocationClient.removeLocationUpdates(locationCallback)
+
     }
     companion object {
         private const val LOCATION_PERMISSION_REQUEST_CODE = 1

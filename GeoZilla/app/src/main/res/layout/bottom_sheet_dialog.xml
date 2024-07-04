@@ -24,7 +24,7 @@
 <TextView
     android:id="@+id/hometextview"
     android:layout_width="match_parent"
-    android:layout_height="50sp"
+    android:layout_height="wrap_content"
     app:layout_constraintTop_toBottomOf="@id/textView_bottomsheet"
     android:text="@string/home"
     android:layout_marginTop="15sp"
@@ -37,7 +37,7 @@
     <TextView
         android:id="@+id/worktextview"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/hometextview"
         app:drawableStartCompat="@drawable/baseline_work_2"
         android:text="@string/work"
@@ -51,7 +51,7 @@
     <TextView
         android:id="@+id/schooltextview"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/worktextview"
         android:text="@string/school"
         android:textSize="15sp"
@@ -64,7 +64,7 @@
     <TextView
         android:id="@+id/gymtextview"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/schooltextview"
         android:text="@string/gym"
         android:textSize="15sp"
@@ -78,7 +78,7 @@
     <TextView
         android:id="@+id/cafetextview"
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="5sp"
         app:layout_constraintTop_toBottomOf="@+id/gymtextview"
         android:paddingStart="5sp"
@@ -90,7 +90,7 @@
     </TextView>
     <TextView
         android:layout_width="match_parent"
-        android:layout_height="50sp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@+id/cafetextview"
         app:drawableStartCompat="@drawable/baseline_place_24"
         android:text="@string/custom_place"

@@ -37,7 +37,7 @@ class UserAdapter(private var userList: List<User>) : RecyclerView.Adapter<UserA
         private val imageView: CircleImageView = itemView.findViewById(R.id.userImageView)
         private val addressTextView:TextView=itemView.findViewById(R.id.userAddress)
 
-        fun bind(user: User) {
+        fun bind(user: User)  {
             nameTextView.text = user.name
             addressTextView.text = user.address
             Glide.with(itemView.context)

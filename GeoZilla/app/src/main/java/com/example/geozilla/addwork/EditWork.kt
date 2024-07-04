@@ -1,14 +1,26 @@
 package com.example.geozilla.addwork
 
+import android.Manifest
+import android.app.PendingIntent
+import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
+import com.example.geozilla.geofencer.GeofenceBroadcastReceiver
 import com.example.geozilla.R
 import com.example.geozilla.dataclass.MockData
+import com.google.android.gms.location.Geofence
+import com.google.android.gms.location.GeofencingClient
+import com.google.android.gms.location.GeofencingRequest
+import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -25,29 +37,30 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var searchView: SearchView
     private lateinit var addressTextView: TextView
     private lateinit var saveBtn: Button
-    private lateinit var text:EditText
+    private lateinit var text: EditText
     private var selectedLatLng: LatLng? = null
     private val db = FirebaseFirestore.getInstance()
+    private lateinit var geofencingClient: GeofencingClient
+    private val geofenceRadius = 650.0 // Radius in meters
+    private val geofenceId = "WORK_GEOFENCE_ID"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_work)
 
-        // Initialize the map fragment
         val mapFragment = supportFragmentManager.findFragmentById(R.id.id_map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
         // Initialize Places
         Places.initialize(applicationContext, getString(R.string.google_map_api_key))
 
-        // Initialize SearchView and TextView variables
+        geofencingClient = LocationServices.getGeofencingClient(this)
+
         searchView = findViewById(R.id.searchView)
         addressTextView = findViewById(R.id.addressTextView)
         saveBtn = findViewById(R.id.saveBtn)
-        text =findViewById(R.id.text)
+        text = findViewById(R.id.text)
 
-
-        //Retrieve Address from firestore
         retrieveAddressFromFirestore()
 
         // Initialize the SearchView
@@ -57,7 +70,6 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
                     // Find matching address
                     val result = MockData.addresses.find { address -> address.name.contains(query, ignoreCase = true) }
                     if (result != null) {
-                        // Display the result in the TextView
                         addressTextView.text = result.details
                         addressTextView.visibility = TextView.VISIBLE
 
@@ -65,10 +77,9 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
                         mMap.addMarker(MarkerOptions().position(result.location).title(result.name))
                         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(result.location, 15f))
 
-                        // Add a circle around the location
                         val circleOptions = CircleOptions()
                             .center(result.location)
-                            .radius(650.0)
+                            .radius(geofenceRadius)
                             .strokeWidth(12f)
                             .strokeColor(0x5500FF00)
                             .fillColor(0x2200FF00)
@@ -76,6 +87,8 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
 
                         selectedLatLng = result.location
 
+                        // Add geofence
+                        addGeofence(result.location)
                     } else {
                         addressTextView.text = getString(R.string.address_not_found)
                         addressTextView.visibility = TextView.VISIBLE
@@ -89,15 +102,20 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
             }
         })
 
-        // Set the click listener for the save button
         saveBtn.setOnClickListener {
             saveAddressToFirestore()
+        }
+
+        // Request location permissions
+      if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+           != PackageManager.PERMISSION_GRANTED) {
+       ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+          REQUEST_LOCATION_PERMISSION_CODE)
         }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
-        // Default location and marker
         val defaultLocation = LatLng(33.77151001443163, 72.75154003554175) // Example: San Francisco
         mMap.addMarker(MarkerOptions().position(defaultLocation).title("Location"))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 10f))
@@ -105,7 +123,7 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
 
     private fun saveAddressToFirestore() {
         val addressText = addressTextView.text.toString().trim()
-        val text=text.text.toString().trim()
+        val text = text.text.toString().trim()
         if (addressText.isEmpty() || selectedLatLng == null) {
             Toast.makeText(this, "No address selected", Toast.LENGTH_SHORT).show()
             return
@@ -130,6 +148,7 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
             Toast.makeText(this, "User not logged in", Toast.LENGTH_SHORT).show()
         }
     }
+
     private fun retrieveAddressFromFirestore() {
         val userId = FirebaseAuth.getInstance().currentUser?.uid
         if (userId != null) {
@@ -151,13 +170,16 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
 
                             val circleOptions = CircleOptions()
                                 .center(location)
-                                .radius(650.0)
+                                .radius(geofenceRadius)
                                 .strokeWidth(12f)
                                 .strokeColor(0x5500FF00)
                                 .fillColor(0x2200FF00)
                             mMap.addCircle(circleOptions)
 
                             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(location, 15f))
+
+                            // Add geofence
+                            addGeofence(location)
                         }
                     }
                 }
@@ -166,5 +188,38 @@ class EditWork : AppCompatActivity(), OnMapReadyCallback {
                         Toast.LENGTH_SHORT).show()
                 }
         }
+    }
+    private fun addGeofence(location: LatLng) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(this, "Location permission not granted", Toast.LENGTH_SHORT).show()
+            return
+        }
+        val geofence = Geofence.Builder()
+            .setRequestId(geofenceId)
+            .setCircularRegion(location.latitude, location.longitude, geofenceRadius.toFloat())
+            .setExpirationDuration(Geofence.NEVER_EXPIRE)
+            .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER or Geofence.GEOFENCE_TRANSITION_EXIT)
+            .build()
+
+        val geofencingRequest = GeofencingRequest.Builder()
+            .setInitialTrigger(GeofencingRequest.INITIAL_TRIGGER_ENTER)
+            .addGeofence(geofence)
+            .build()
+
+        val intent = Intent(this, GeofenceBroadcastReceiver::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_MUTABLE)
+
+        geofencingClient.addGeofences(geofencingRequest, pendingIntent).run {
+            addOnSuccessListener {
+                Log.i("EditWork", "Geofence added successfully")
+            }
+            addOnFailureListener {
+                Log.e("EditWork", "Failed to add geofence: ${it.message}")
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_LOCATION_PERMISSION_CODE = 1
     }
 }

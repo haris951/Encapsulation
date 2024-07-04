@@ -111,6 +111,15 @@
     <string name="user_address">user address</string>
     <string name="name">name</string>
     <string name="delete_all">Delete All</string>
+    <string name="username">Username</string>
+    <string name="phone_notifications">Phone Notifications:</string>
+    <string name="on_arriving">On Arriving</string>
+    <string name="on_leaving">On Leaving</string>
+    <string name="advanced_settings">Advanced Settings:</string>
+    <string name="doesntarriveby">Doesn\'t arrive by</string>
+    <string name="_09_00_am">09:00 AM</string>
+    <string name="_05_000_pm_06_00_pm">05:000 PM - 06:00 PM</string>
+    <string name="doesn_t_leave_between">Doesn\'t leave between</string>
 
 
 </resources>

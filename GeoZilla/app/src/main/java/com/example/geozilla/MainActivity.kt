@@ -23,10 +23,6 @@ class MainActivity : AppCompatActivity() {
                     replaceFragment(PlaceFragment())
                     true
                 }
-                R.id.bottom_devices -> {
-                    replaceFragment(DevicesFragment())
-                    true
-                }
                 R.id.bottom_Notifications -> {
                     replaceFragment(NotificationFragment())
                     true

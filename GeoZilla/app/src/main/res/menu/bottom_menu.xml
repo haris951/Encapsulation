@@ -9,11 +9,7 @@
         android:title="@string/places"
         android:icon="@drawable/baseline_add_location_24"
         />
-    <item
-        android:id="@+id/bottom_devices"
-        android:title="@string/devices"
-        android:icon="@drawable/baseline_devices_24"
-        />
+
     <item
         android:id="@+id/bottom_Notifications"
         android:title="@string/notifications"

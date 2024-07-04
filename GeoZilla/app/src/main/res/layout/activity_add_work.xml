@@ -112,7 +112,7 @@
             android:layout_width="391dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="7dp"
-            tools:listitem="@layout/user_item_layout" />
+            tools:listitem="@layout/user_notification" />
     </com.google.android.material.card.MaterialCardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
