@@ -1,7 +1,0 @@
-<resources>
-    <string name="app_name">Weekly Code</string>
-    <string name="weekly_code">WEEKLY CODE</string>
-    <string name="add_any_string">Add Any String</string>
-    <string name="submit">Submit</string>
-    <string name="output">OutPut</string>
-</resources>
